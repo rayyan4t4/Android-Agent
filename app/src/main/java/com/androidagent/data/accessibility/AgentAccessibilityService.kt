@@ -132,25 +132,25 @@ class AgentAccessibilityService : AccessibilityService() {
 
 object UiHierarchyParser {
     fun parse(root: AccessibilityNodeInfo, depth: Int = 0): List<UiNode> {
-        val result = mutableListOf<UiNode>()
-        parseNode(root, result, depth)
-        return result
+        val rootNode = parseNode(root, depth) ?: return emptyList()
+        return listOf(rootNode)
     }
 
-    private fun parseNode(node: AccessibilityNodeInfo, result: MutableList<UiNode>, depth: Int) {
+    private fun parseNode(node: AccessibilityNodeInfo, depth: Int): UiNode? {
         val rect = Rect()
         node.getBoundsInScreen(rect)
 
         val children = mutableListOf<UiNode>()
         for (i in 0 until node.childCount) {
             val child = node.getChild(i) ?: continue
-            val childNodes = mutableListOf<UiNode>()
-            parseNode(child, childNodes, depth + 1)
-            children.addAll(childNodes)
+            val parsedChild = parseNode(child, depth + 1)
+            if (parsedChild != null) {
+                children.add(parsedChild)
+            }
             child.recycle()
         }
 
-        val uiNode = UiNode(
+        return UiNode(
             id = node.viewIdResourceName ?: "",
             className = node.className?.toString() ?: "",
             packageName = node.packageName?.toString() ?: "",
@@ -169,6 +169,5 @@ object UiHierarchyParser {
             children = children,
             depth = depth
         )
-        result.add(uiNode)
     }
 }

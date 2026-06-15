@@ -7,6 +7,7 @@ workflows:
     scripts:
       - name: Build Android Debug APK
         script: |
+          git submodule update --init --recursive
           chmod +x ./gradlew
           ./gradlew assembleDebug
     artifacts:
