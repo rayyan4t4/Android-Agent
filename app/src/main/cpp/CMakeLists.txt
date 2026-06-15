@@ -15,11 +15,26 @@ file(GLOB LLAMA_SOURCES
     ${LLAMA_DIR}/ggml/src/*.c
     ${LLAMA_DIR}/ggml/src/ggml-cpu/*.cpp
     ${LLAMA_DIR}/ggml/src/ggml-cpu/*.c
+    ${LLAMA_DIR}/ggml/src/ggml-cpu/amx/*.cpp
+    ${LLAMA_DIR}/ggml/src/ggml-cpu/llamafile/*.cpp
 )
+
+if(${ANDROID_ABI} MATCHES "arm64-v8a" OR ${ANDROID_ABI} MATCHES "armeabi-v7a")
+    file(GLOB ARCH_SOURCES
+        ${LLAMA_DIR}/ggml/src/ggml-cpu/arch/arm/*.cpp
+        ${LLAMA_DIR}/ggml/src/ggml-cpu/arch/arm/*.c
+    )
+elseif(${ANDROID_ABI} MATCHES "x86" OR ${ANDROID_ABI} MATCHES "x86_64")
+    file(GLOB ARCH_SOURCES
+        ${LLAMA_DIR}/ggml/src/ggml-cpu/arch/x86/*.cpp
+        ${LLAMA_DIR}/ggml/src/ggml-cpu/arch/x86/*.c
+    )
+endif()
 
 add_library(llama-android SHARED
     llama_jni.cpp
     ${LLAMA_SOURCES}
+    ${ARCH_SOURCES}
 )
 
 target_include_directories(llama-android PRIVATE

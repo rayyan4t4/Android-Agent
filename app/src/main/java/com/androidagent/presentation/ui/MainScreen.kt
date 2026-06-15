@@ -281,7 +281,7 @@ private fun PlanCard(plan: com.androidagent.domain.model.AgentPlan) {
                 Row(modifier = Modifier.padding(vertical = 2.dp)) {
                     val icon = when {
                         index < plan.currentStepIndex -> Icons.Default.CheckCircle
-                        index == plan.currentStepIndex -> Icons.Default.ArrowForward
+                        index == plan.currentStepIndex -> Icons.AutoMirrored.Filled.ArrowForward
                         else -> Icons.Default.Circle
                     }
                     Icon(

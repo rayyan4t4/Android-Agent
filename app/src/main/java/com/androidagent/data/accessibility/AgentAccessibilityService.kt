@@ -62,7 +62,6 @@ class AgentAccessibilityService : AccessibilityService() {
         val root = rootInActiveWindow ?: return
         val nodes = UiHierarchyParser.parse(root)
         _currentNodes.value = nodes
-        root.recycle()
     }
 
     fun getScreenDimensions(): Pair<Int, Int> {
@@ -147,7 +146,6 @@ object UiHierarchyParser {
             if (parsedChild != null) {
                 children.add(parsedChild)
             }
-            child.recycle()
         }
 
         return UiNode(

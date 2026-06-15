@@ -22,6 +22,7 @@ class MemoryViewModel @Inject constructor(
     private val _selectedType = MutableStateFlow(MemoryType.SHORT_TERM)
     val selectedType: StateFlow<MemoryType> = _selectedType
 
+    @OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     val memories: StateFlow<List<MemoryEntry>> = _selectedType
         .flatMapLatest { type -> getMemory.observeAll(type) }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
