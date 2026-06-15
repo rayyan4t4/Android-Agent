@@ -9,6 +9,8 @@ set(LLAMA_DIR ${CMAKE_CURRENT_SOURCE_DIR}/llama.cpp)
 file(GLOB LLAMA_SOURCES
     ${LLAMA_DIR}/src/*.cpp
     ${LLAMA_DIR}/src/*.c
+    ${LLAMA_DIR}/src/models/*.cpp
+    ${LLAMA_DIR}/src/models/*.c
     ${LLAMA_DIR}/ggml/src/*.cpp
     ${LLAMA_DIR}/ggml/src/*.c
     ${LLAMA_DIR}/ggml/src/ggml-cpu/*.cpp
@@ -26,6 +28,7 @@ target_include_directories(llama-android PRIVATE
     ${LLAMA_DIR}/ggml/src
     ${LLAMA_DIR}/ggml/src/ggml-cpu
     ${LLAMA_DIR}/src
+    ${LLAMA_DIR}/src/models
     ${LLAMA_DIR}/common
 )
 
