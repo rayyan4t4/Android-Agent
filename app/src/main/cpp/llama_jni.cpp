@@ -79,7 +79,7 @@ JNIEXPORT void JNICALL
 Java_com_androidagent_data_llm_LlamaCppEngine_nativeClearContext(
     JNIEnv *env, jobject thiz, jlong ctx_ptr) {
     auto *ctx = reinterpret_cast<llama_context *>(ctx_ptr);
-    if (ctx) llama_kv_cache_clear(ctx);
+    if (ctx) llama_memory_clear(llama_get_memory(ctx), true);
 }
 
 JNIEXPORT jstring JNICALL
@@ -100,11 +100,16 @@ Java_com_androidagent_data_llm_LlamaCppEngine_nativeGenerate(
     std::vector<llama_token> tokens(n_prompt_tokens);
     llama_tokenize(vocab, prompt_str.c_str(), prompt_str.length(), tokens.data(), tokens.size(), true, true);
 
-    llama_kv_cache_clear(ctx);
+    llama_memory_clear(llama_get_memory(ctx), true);
 
     llama_batch batch = llama_batch_init(tokens.size(), 0, 1);
+    batch.n_tokens = (int32_t)tokens.size();
     for (size_t i = 0; i < tokens.size(); i++) {
-        llama_batch_add(batch, tokens[i], i, {0}, i == tokens.size() - 1);
+        batch.token[i]     = tokens[i];
+        batch.pos[i]       = (llama_pos)i;
+        batch.n_seq_id[i]  = 1;
+        batch.seq_id[i][0] = 0;
+        batch.logits[i]    = (i == tokens.size() - 1) ? 1 : 0;
     }
     llama_decode(ctx, batch);
     llama_batch_free(batch);
@@ -162,7 +167,12 @@ Java_com_androidagent_data_llm_LlamaCppEngine_nativeGenerate(
         if (should_stop) break;
 
         llama_batch next_batch = llama_batch_init(1, 0, 1);
-        llama_batch_add(next_batch, new_token, n_cur, {0}, true);
+        next_batch.n_tokens     = 1;
+        next_batch.token[0]     = new_token;
+        next_batch.pos[0]       = (llama_pos)n_cur;
+        next_batch.n_seq_id[0]  = 1;
+        next_batch.seq_id[0][0] = 0;
+        next_batch.logits[0]    = 1;
         llama_decode(ctx, next_batch);
         llama_batch_free(next_batch);
         n_cur++;

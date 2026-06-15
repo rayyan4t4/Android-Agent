@@ -24,6 +24,7 @@ target_include_directories(llama-android PRIVATE
     ${LLAMA_DIR}/include
     ${LLAMA_DIR}/ggml/include
     ${LLAMA_DIR}/ggml/src
+    ${LLAMA_DIR}/ggml/src/ggml-cpu
     ${LLAMA_DIR}/src
     ${LLAMA_DIR}/common
 )
