@@ -16,7 +16,6 @@ file(GLOB LLAMA_SOURCES
     ${LLAMA_DIR}/ggml/src/ggml-cpu/*.cpp
     ${LLAMA_DIR}/ggml/src/ggml-cpu/*.c
     ${LLAMA_DIR}/ggml/src/ggml-cpu/amx/*.cpp
-    ${LLAMA_DIR}/ggml/src/ggml-cpu/llamafile/*.cpp
 )
 
 if(${ANDROID_ABI} MATCHES "arm64-v8a" OR ${ANDROID_ABI} MATCHES "armeabi-v7a")
